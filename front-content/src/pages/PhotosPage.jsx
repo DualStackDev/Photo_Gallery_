@@ -1,10 +1,16 @@
 import React from "react";
-import Grid from "../components/Grid";
+import InfiniteScrollImageGallery from "../components/InfiniteScroll";
+import Navbar from "../components/Navbar";
 
 const Photos = () => {
   return (
     <div>
-      <Grid></Grid>
+      <Navbar></Navbar>
+      <br />
+      <br />
+      <br />
+      <br />
+      <InfiniteScrollImageGallery />
     </div>
   );
 };

@@ -7,7 +7,7 @@ export default function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/photos" element={<Photos />} />
+        <Route path="/gallery/:slug" element={<Photos />} />
       </Routes>
     </Router>
   );
