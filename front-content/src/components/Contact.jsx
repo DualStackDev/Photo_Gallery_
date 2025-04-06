@@ -8,6 +8,7 @@ const ContactSection = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    number: "",
     subject: "",
     message: "",
     services: [],
@@ -65,22 +66,6 @@ const ContactSection = () => {
     });
   };
 
-  // Handle checkbox changes for services
-  const handleServiceChange = (e) => {
-    const { value, checked } = e.target;
-    if (checked) {
-      setFormData({
-        ...formData,
-        services: [...formData.services, value],
-      });
-    } else {
-      setFormData({
-        ...formData,
-        services: formData.services.filter((service) => service !== value),
-      });
-    }
-  };
-
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -109,6 +94,7 @@ const ContactSection = () => {
     setFormData({
       name: "",
       email: "",
+      number: "",
       subject: "",
       message: "",
       services: [],
@@ -193,6 +179,22 @@ const ContactSection = () => {
                 placeholder="your.email@example.com"
               />
             </div>
+
+            <div>
+              <label htmlFor="phoneNo" className="block text-gray-300 mb-2">
+                Phone no *
+              </label>
+              <input
+                type="phone number"
+                id="number"
+                name="number"
+                value={formData.number}
+                onChange={handleChange}
+                required
+                className="w-full bg-gray-800 bg-opacity-50 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="(91+) 1234567890"
+              />
+            </div>
           </div>
 
           <div className="mb-6">
@@ -224,38 +226,6 @@ const ContactSection = () => {
               className="w-full bg-gray-800 bg-opacity-50 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Tell me about your project or inquiry..."
             ></textarea>
-          </div>
-
-          <div className="mb-8">
-            <p className="text-gray-300 mb-3">Services of interest</p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {[
-                "Portrait Photography",
-                "Wedding Photography",
-                "Commercial/Brand",
-                "Event Coverage",
-                "Fine Art Prints",
-                "Photography Lessons",
-              ].map((service) => (
-                <div key={service} className="flex items-center">
-                  <input
-                    type="checkbox"
-                    id={service.replace(/\s+/g, "-").toLowerCase()}
-                    name="services"
-                    value={service}
-                    checked={formData.services.includes(service)}
-                    onChange={handleServiceChange}
-                    className="w-4 h-4 mr-2 text-blue-500 focus:ring-blue-500 rounded"
-                  />
-                  <label
-                    htmlFor={service.replace(/\s+/g, "-").toLowerCase()}
-                    className="text-gray-300 text-sm"
-                  >
-                    {service}
-                  </label>
-                </div>
-              ))}
-            </div>
           </div>
 
           <motion.button

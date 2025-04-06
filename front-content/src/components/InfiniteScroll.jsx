@@ -7,6 +7,7 @@ const InfiniteScrollImageGallery = () => {
   const [images, setImages] = useState([]);
   const [page, setPage] = useState(1);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [imageDetails, setImageDetails] = useState(null);
   const loaderRef = useRef(null);
 
   const fetchImages = useCallback(async () => {
@@ -19,6 +20,17 @@ const InfiniteScrollImageGallery = () => {
       console.error("Error fetching images", error);
     }
   }, [page]);
+
+  const fetchImageDetails = async (id) => {
+    try {
+      const response = await axios.get(
+        `https://api.unsplash.com/photos/${id}?client_id=${YOUR_ACCESS_KEY}`
+      );
+      setImageDetails(response.data);
+    } catch (error) {
+      console.error("Error fetching image details", error);
+    }
+  };
 
   useEffect(() => {
     fetchImages();
@@ -41,10 +53,12 @@ const InfiniteScrollImageGallery = () => {
 
   const handleImageClick = (image) => {
     setSelectedImage(image);
+    fetchImageDetails(image.id);
   };
 
   const closeImage = () => {
     setSelectedImage(null);
+    setImageDetails(null);
   };
 
   return (
@@ -78,15 +92,45 @@ const InfiniteScrollImageGallery = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            <motion.img
-              src={selectedImage.urls.regular}
-              alt={selectedImage.alt_description}
-              className="max-w-6xl max-h-full p-8"
-              initial={{ scale: 0.8 }}
+            <motion.div
+              className="flex bg-gray-900 text-white rounded-lg overflow-hidden max-w-5xl w-full h-[80vh]"
+              initial={{ scale: 0.9 }}
               animate={{ scale: 1 }}
-              exit={{ scale: 0.8 }}
+              exit={{ scale: 0.9 }}
               transition={{ duration: 0.5 }}
-            />
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="w-1/2 h-full">
+                <img
+                  src={selectedImage.urls.regular}
+                  alt={selectedImage.alt_description}
+                  className="object-cover w-full h-full"
+                />
+              </div>
+              <div className="w-1/2 p-6 overflow-y-auto">
+                <h2 className="text-xl font-bold mb-2">
+                  {imageDetails?.description || "No Description"}
+                </h2>
+                <p className="text-gray-600 mb-4">
+                  {imageDetails?.alt_description}
+                </p>
+                {imageDetails?.tags && (
+                  <div>
+                    <h3 className="font-semibold mb-2">Tags:</h3>
+                    <ul className="flex flex-wrap gap-2">
+                      {imageDetails.tags.map((tag) => (
+                        <li
+                          key={tag.title}
+                          className="px-2 py-1 bg-gray-700 rounded"
+                        >
+                          #{tag.title}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
