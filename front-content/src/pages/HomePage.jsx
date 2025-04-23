@@ -1,4 +1,4 @@
-import Navbar from "../components/Navbar";
+import HomeNavbar from "../components/HomeNavbar";
 import MainHero from "../components/MainHero";
 import PhotoSection from "../components/PhotoSection";
 import ContactSection from "../components/Contact";
@@ -7,7 +7,7 @@ import Footer from "../components/Footer";
 export default function Home() {
   return (
     <div>
-      <Navbar></Navbar>
+      <HomeNavbar></HomeNavbar>
       <MainHero></MainHero>
       <PhotoSection></PhotoSection>
       <ContactSection></ContactSection>

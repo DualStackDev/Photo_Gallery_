@@ -1,11 +1,11 @@
 import React from "react";
 import InfiniteScrollImageGallery from "../components/InfiniteScroll";
-import Navbar from "../components/Navbar";
+import GalleryNavbar from "../components/GalleryNavbar";
 
 const Photos = () => {
   return (
     <div>
-      <Navbar></Navbar>
+      <GalleryNavbar />
       <br />
       <br />
       <br />
