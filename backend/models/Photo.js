@@ -1,25 +1,31 @@
+// models/Photo.js
 import mongoose from 'mongoose';
 
 const photoSchema = new mongoose.Schema({
   imageUrl: { 
-    type: String, 
-    required: true
- }, 
- 
+    type: String,
+    required: true 
+  }, // URL of the image (stored in Cloudinary)
+  
   thumbnailUrl: { 
     type: String, 
-    required: true
- }, 
+    required: true 
+  }, // URL of the thumbnail (optimized for fast loading)
+  
+  description: { 
+    type: String, 
+    default: '' 
+  }, // Description of the image
  
+  tags: [{ type: String }], // Tags for filtering (e.g., "cats", "cars", "weddings")
  
-  createdAt: {
-     type: Date, 
-     default: Date.now 
-    },
+  folder: { 
+    type: String, 
+    required: true 
+  }, // Folder/category name (e.g., "cats", "cars")
 },
 {
-    timestamps: true,
-  }
-);
+  timestamps: true,
+});
 
-export const Photo = mongoose.model('Photo', photoSchema);
+export default mongoose.model('Photo', photoSchema);
