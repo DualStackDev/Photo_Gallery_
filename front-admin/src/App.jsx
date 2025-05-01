@@ -1,11 +1,15 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import AdminPage from "./pages/AdminPage.jsx";
+import UploadPage from "./pages/UploadPage.jsx";
+import DashboardPage from "./pages/DashboardPage.jsx";
+import NotificationPage from "./pages/NotificationPage.jsx";
 
 export default function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<AdminPage />} />
+        <Route path="/" element={<DashboardPage />} />
+        <Route path="/upload" element={<UploadPage />} />
+        <Route path="/notifications" element={<NotificationPage />} />
       </Routes>
     </Router>
   );

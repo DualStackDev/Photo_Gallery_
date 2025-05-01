@@ -1,10 +1,10 @@
-import express from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import photoRoutes from './routes/photoRoutes.js';
-import userBioRoutes from './routes/userBioRoutes.js';
-import { connectDb } from './db/connectDatabase.js';
-import { v2 as cloudinary } from 'cloudinary';
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import photoRoutes from "./routes/photoRoutes.js";
+import userBioRoutes from "./routes/userBioRoutes.js";
+import { connectDb } from "./db/connectDatabase.js";
+import { v2 as cloudinary } from "cloudinary";
 
 dotenv.config();
 const app = express();
@@ -28,11 +28,11 @@ app.use(
       if (allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
-        callback(new Error('Not allowed by CORS'));
+        callback(new Error("Not allowed by CORS"));
       }
     },
     credentials: true, // Allow cookies
-    allowedHeaders: ['Authorization', 'Content-Type'],
+    allowedHeaders: ["Authorization", "Content-Type"],
   })
 );
 
@@ -44,8 +44,8 @@ cloudinary.config({
 
 app.use(express.json());
 
-app.use('/api/gallery', photoRoutes);
-app.use('/api/user', userBioRoutes);
+app.use("/api/gallery", photoRoutes);
+app.use("/api/user", userBioRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
