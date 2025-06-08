@@ -9,7 +9,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<DashboardPage />} />
         <Route path="/upload" element={<UploadPage />} />
-        <Route path="/notifications" element={<NotificationPage />} />
+        <Route path="/notification" element={<NotificationPage />} />
       </Routes>
     </Router>
   );

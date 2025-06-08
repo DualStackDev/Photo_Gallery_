@@ -20,9 +20,10 @@ const photoSchema = new mongoose.Schema({
   tags: [{ type: String }], // Tags for filtering (e.g., "cats", "cars", "weddings")
  
   folder: { 
-    type: String, 
+    type: mongoose.Schema.Types.ObjectId, // Reference to Folder model
+    ref: 'Folder',
     required: true 
-  }, // Folder/category name (e.g., "cats", "cars")
+  },
 },
 {
   timestamps: true,

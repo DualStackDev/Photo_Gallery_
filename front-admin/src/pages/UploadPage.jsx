@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { motion } from "framer-motion";
+import { NavLink } from "react-router-dom";
 
 export default function UploadPage() {
   const [navOpen, setNavOpen] = useState(false);
-  const navigator = useNavigate();
 
   return (
     <div className="min-h-screen flex bg-gray-900 text-gray-100">
@@ -14,15 +13,52 @@ export default function UploadPage() {
         initial={{ x: -250 }}
         animate={{ x: navOpen ? 0 : -250 }}
         transition={{ duration: 0.3 }}
-        className="fixed top-14 left-0 h-full w-64 bg-gray-800 shadow-md z-30"
+        className="fixed top-0 left-0 h-full w-64 bg-gray-800 shadow-md z-30"
       >
         <div className="p-4 text-lg font-semibold border-b border-gray-700">
           Admin Menu
         </div>
         <ul className="p-4 space-y-2">
-          <li className="hover:text-blue-400 cursor-pointer">Dashboard</li>
-          <li className="hover:text-blue-400 cursor-pointer">Notifications</li>
-          <li className="hover:text-blue-400 cursor-pointer">Upload</li>
+          <li>
+            <NavLink
+              to="/"
+              end
+              className={({ isActive }) =>
+                `block px-2 py-1 rounded hover:text-blue-400 ${
+                  isActive ? "text-blue-400" : "text-gray-100"
+                }`
+              }
+              onClick={() => setNavOpen(false)}
+            >
+              Dashboard
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/upload"
+              className={({ isActive }) =>
+                `block px-2 py-1 rounded hover:text-blue-400 ${
+                  isActive ? "text-blue-400" : "text-gray-100"
+                }`
+              }
+              onClick={() => setNavOpen(false)}
+            >
+              Upload
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/notification"
+              className={({ isActive }) =>
+                `block px-2 py-1 rounded hover:text-blue-400 ${
+                  isActive ? "text-blue-400" : "text-gray-100"
+                }`
+              }
+              onClick={() => setNavOpen(false)}
+            >
+              Notification
+            </NavLink>
+          </li>
         </ul>
       </motion.div>
 

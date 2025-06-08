@@ -1,6 +1,7 @@
 // controllers/photoController.js
 import Photo from '../models/Photo.js';
 import { v2 as cloudinary } from 'cloudinary';
+import Folder from '../models/Folder.js';
 
 // Get candid photos (e.g., photos with the "candid" tag)
 export const getCandidPhotos = async (req, res) => {
@@ -31,29 +32,49 @@ export const uploadPhoto = async (req, res) => {
       return res.status(400).json({ message: 'No file uploaded' });
     }
 
-    // Upload image to Cloudinary with optimization
+    const { description, tags, folderName } = req.body; // Now accepts folderName instead of folderId
+
+    // ===== 1. CHECK IF FOLDER EXISTS =====
+    let folder = await Folder.findOne({ name: folderName });
+
+    // ===== 2. IF FOLDER DOESN'T EXIST, CREATE IT =====
+    if (!folder) {
+      folder = new Folder({ name: folderName });
+      await folder.save();
+      console.log(`Created new folder: ${folderName}`);
+    }
+
+    // ===== 3. UPLOAD IMAGE TO CLOUDINARY =====
     const result = await cloudinary.uploader.upload(file.buffer.toString('base64'), {
-      folder: 'photographer', // Folder in Cloudinary
+      folder: 'photographer',
       transformation: [
-        { width: 800, height: 800, crop: 'limit', quality: 'auto' }, // High-quality version
-        { width: 200, height: 200, crop: 'thumb', quality: 'auto' }, // Thumbnail version
+        { width: 800, height: 800, crop: 'limit', quality: 'auto' }, // High-quality
+        { width: 200, height: 200, crop: 'thumb', quality: 'auto' }, // Thumbnail
       ],
     });
 
-    // Save photo details to MongoDB
-    const { description, tags, folder } = req.body;
+    // ===== 4. SAVE PHOTO TO DATABASE =====
     const newPhoto = new Photo({
-      imageUrl: result.secure_url, // High-quality image
-      thumbnailUrl: result.eager[0].secure_url, // Thumbnail image
+      imageUrl: result.secure_url,
+      thumbnailUrl: result.eager[0].secure_url,
       description,
-      tags: tags.split(',').map((tag) => tag.trim()), // Convert tags string to array
-      folder,
+      tags: tags.split(',').map(tag => tag.trim()),
+      folder: folder._id, // Reference the folder's ObjectId
     });
 
     await newPhoto.save();
-    res.status(201).json(newPhoto);
+
+    res.status(201).json({
+      photo: newPhoto,
+      folder: { _id: folder._id, name: folder.name }, // Return folder info for confirmation
+    });
+
   } catch (error) {
-    res.status(500).json({ message: 'Error uploading photo', error });
+    console.error('Error in uploadPhoto:', error);
+    res.status(500).json({ 
+      message: 'Error uploading photo',
+      error: error.message 
+    });
   }
 };
 
@@ -73,22 +94,3 @@ export const getPhotoDetails = async (req, res) => {
   }
 };
 
-export const deletePhoto = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const photo = await Photo.findById(id);
-
-    if (!photo) {
-      return res.status(404).json({ message: 'Photo not found' });
-    }
-
-    // Delete image from Cloudinary
-    await cloudinary.uploader.destroy(photo.imageUrl);
-
-    // Delete photo from MongoDB
-    await Photo.findByIdAndDelete(id);
-    res.status(200).json({ message: 'Photo deleted successfully' });
-  } catch (error) {
-    res.status(500).json({ message: 'Error deleting photo', error });
-  }
-};

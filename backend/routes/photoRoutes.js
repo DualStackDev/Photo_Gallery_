@@ -23,7 +23,4 @@ router.post('/upload', upload.single('image'), uploadPhoto);
 // Get details of a specific photo (for the dialog box)
 router.get('/photo/:id', getPhotoDetails);
 
-// Delete a photo (admin only)  
-router.delete('/photos/:id', deletePhoto);
-
 export default router;
