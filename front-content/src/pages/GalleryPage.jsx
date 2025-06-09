@@ -16,19 +16,20 @@ const GalleryPage = () => {
   return (
     <>
       <GalleryNavbar />
-      <div className="pt-28 p-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+      <div className="mt-[25vh] px-8 md:px-16 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
         {folders.map((folder) => (
           <div
             key={folder._id}
             onClick={() => navigate(`/gallery/${folder.name}`)}
-            className="cursor-pointer rounded-lg shadow-md overflow-hidden hover:shadow-lg transition bg-white"
-            style={{ minHeight: 0, maxWidth: 160 }}
+            className="cursor-pointer rounded-xl shadow-md overflow-hidden hover:shadow-lg transition bg-gradient-to-br from-yellow-100 to-yellow-200"
+            style={{ minHeight: 0, maxWidth: 180 }}
           >
-            {/* Small square placeholder */}
-            <div className="w-full h-24 bg-gray-300 flex items-center justify-center text-gray-600 text-xl">
+            {/* Folder icon area */}
+            <div className="w-full h-24 flex items-center justify-center text-yellow-800 font-bold text-lg tracking-wide">
               {folder.name.toUpperCase()}
             </div>
-            <div className="p-2 font-semibold text-center text-gray-800 text-sm">
+            {/* Folder name */}
+            <div className="p-3 text-center text-sm font-semibold text-gray-900">
               {folder.name}
             </div>
           </div>
