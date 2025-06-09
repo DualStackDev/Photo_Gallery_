@@ -2,34 +2,35 @@ import { useEffect, useState } from "react";
 import GalleryNavbar from "../components/GalleryNavbar";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import dotenv from "dotenv";
 
 const GalleryPage = () => {
-  const [albums, setAlbums] = useState([]);
+  const [folders, setFolders] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/api/gallery/candid`)
-      .then((res) => setAlbums(res.data));
+      .get(`http://localhost:5000/api/folders`)
+      .then((res) => setFolders(res.data));
   }, []);
 
   return (
     <>
       <GalleryNavbar />
-      <div className="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {albums.map((album) => (
+      <div className="pt-28 p-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+        {folders.map((folder) => (
           <div
-            key={album.name}
-            onClick={() => navigate(`/gallery/${album.name}`)}
-            className="cursor-pointer rounded-xl shadow-md overflow-hidden hover:shadow-lg transition"
+            key={folder._id}
+            onClick={() => navigate(`/gallery/${folder.name}`)}
+            className="cursor-pointer rounded-lg shadow-md overflow-hidden hover:shadow-lg transition bg-white"
+            style={{ minHeight: 0, maxWidth: 160 }}
           >
-            <img
-              src={album.coverImage}
-              alt={album.name}
-              className="w-full h-48 object-cover"
-            />
-            <div className="p-4 font-semibold text-center">{album.name}</div>
+            {/* Small square placeholder */}
+            <div className="w-full h-24 bg-gray-300 flex items-center justify-center text-gray-600 text-xl">
+              {folder.name.toUpperCase()}
+            </div>
+            <div className="p-2 font-semibold text-center text-gray-800 text-sm">
+              {folder.name}
+            </div>
           </div>
         ))}
       </div>

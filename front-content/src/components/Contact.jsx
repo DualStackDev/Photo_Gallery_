@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, useAnimation } from "framer-motion";
 import { useInView } from "react-intersection-observer";
+import axios from "axios";
 
 const ContactSection = () => {
   // Form state
@@ -67,11 +68,16 @@ const ContactSection = () => {
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Form validation
-    if (!formData.name || !formData.email || !formData.message) {
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.message ||
+      !formData.number
+    ) {
       setFormStatus({
         submitted: true,
         error: true,
@@ -80,25 +86,37 @@ const ContactSection = () => {
       return;
     }
 
-    // Here you would normally send the form data to your backend
-    // This is a simulation of a successful submission
-    console.log("Form submitted:", formData);
-
-    setFormStatus({
-      submitted: true,
-      error: false,
-      message: "Thank you for your message! I'll get back to you soon.",
-    });
-
-    // Reset form after successful submission
-    setFormData({
-      name: "",
-      email: "",
-      number: "",
-      subject: "",
-      message: "",
-      services: [],
-    });
+    try {
+      // Send POST request to backend
+      await axios.post("http://localhost:5000/api/contact", {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.number,
+        subject: formData.subject,
+        message: formData.message,
+      });
+      setFormStatus({
+        submitted: true,
+        error: false,
+        message: "Thank you for your message! I'll get back to you soon.",
+      });
+      // Reset form after successful submission
+      setFormData({
+        name: "",
+        email: "",
+        number: "",
+        subject: "",
+        message: "",
+        services: [],
+      });
+    } catch (error) {
+      setFormStatus({
+        submitted: true,
+        error: true,
+        message:
+          "There was an error submitting the form. Please try again later.",
+      });
+    }
 
     // Reset form status after 5 seconds
     setTimeout(() => {

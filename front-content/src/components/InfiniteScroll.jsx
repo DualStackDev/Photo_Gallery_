@@ -1,59 +1,40 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 
-const YOUR_ACCESS_KEY = "njsmFZFlgHzuSiAywGmDwEKvFM3w-KbsDsXXGcagKVM";
-const InfiniteScrollImageGallery = () => {
+const InfiniteScrollImageGallery = ({ folderName }) => {
   const [images, setImages] = useState([]);
-  const [page, setPage] = useState(1);
   const [selectedImage, setSelectedImage] = useState(null);
   const [imageDetails, setImageDetails] = useState(null);
   const loaderRef = useRef(null);
 
-  const fetchImages = useCallback(async () => {
-    try {
-      const response = await axios.get(
-        `https://api.unsplash.com/photos?client_id=${YOUR_ACCESS_KEY}&page=${page}&per_page=10`
-      );
-      setImages((prev) => [...prev, ...response.data]);
-    } catch (error) {
-      console.error("Error fetching images", error);
-    }
-  }, [page]);
+  // Fetch all images in the folder on mount or when folderName changes
+  useEffect(() => {
+    if (!folderName) return;
+    axios
+      .get(`http://localhost:5000/api/gallery/folder/${folderName}`)
+      .then((res) => {
+        console.log("Fetched images:", res.data); // Debug log
+        setImages(res.data);
+      })
+      .catch((err) => setImages([]));
+  }, [folderName]);
 
-  const fetchImageDetails = async (id) => {
+  // Fetch image details from backend
+  const getImageDetails = async (id) => {
     try {
       const response = await axios.get(
-        `https://api.unsplash.com/photos/${id}?client_id=${YOUR_ACCESS_KEY}`
+        `http://localhost:5000/api/gallery/photo/${id}`
       );
       setImageDetails(response.data);
     } catch (error) {
-      console.error("Error fetching image details", error);
+      setImageDetails(null);
     }
   };
 
-  useEffect(() => {
-    fetchImages();
-  }, [fetchImages]);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          setPage((prev) => prev + 1);
-        }
-      },
-      { threshold: 1 }
-    );
-
-    if (loaderRef.current) observer.observe(loaderRef.current);
-
-    return () => observer.disconnect();
-  }, []);
-
   const handleImageClick = (image) => {
     setSelectedImage(image);
-    fetchImageDetails(image.id);
+    getImageDetails(image._id);
   };
 
   const closeImage = () => {
@@ -65,7 +46,7 @@ const InfiniteScrollImageGallery = () => {
     <div className="relative p-4 columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4">
       {images.map((image) => (
         <motion.div
-          key={image.id}
+          key={image._id}
           className="mb-4 break-inside-avoid rounded-lg overflow-hidden cursor-pointer"
           onClick={() => handleImageClick(image)}
           initial={{ opacity: 0, y: 20 }}
@@ -75,8 +56,8 @@ const InfiniteScrollImageGallery = () => {
           whileHover={{ scale: 1.05 }}
         >
           <img
-            src={image.urls.small}
-            alt={image.alt_description}
+            src={image.image}
+            alt={image.imageName}
             className="w-full h-auto object-cover"
           />
         </motion.div>
@@ -102,33 +83,20 @@ const InfiniteScrollImageGallery = () => {
             >
               <div className="w-1/2 h-full">
                 <img
-                  src={selectedImage.urls.regular}
-                  alt={selectedImage.alt_description}
+                  src={selectedImage.image}
+                  alt={selectedImage.imageName}
                   className="object-cover w-full h-full"
                 />
               </div>
               <div className="w-1/2 p-6 overflow-y-auto">
                 <h2 className="text-xl font-bold mb-2">
-                  {imageDetails?.description || "No Description"}
+                  {imageDetails?.imageName || selectedImage.imageName || "No Name"}
                 </h2>
                 <p className="text-gray-600 mb-4">
-                  {imageDetails?.alt_description}
+                  {imageDetails?.tags?.join(", ") ||
+                    selectedImage.tags?.join(", ")}
                 </p>
-                {imageDetails?.tags && (
-                  <div>
-                    <h3 className="font-semibold mb-2">Tags:</h3>
-                    <ul className="flex flex-wrap gap-2">
-                      {imageDetails.tags.map((tag) => (
-                        <li
-                          key={tag.title}
-                          className="px-2 py-1 bg-gray-700 rounded"
-                        >
-                          #{tag.title}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+                {/* Add more details if needed */}
               </div>
             </motion.div>
           </motion.div>

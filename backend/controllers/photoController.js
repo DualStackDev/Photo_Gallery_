@@ -1,15 +1,17 @@
 // controllers/photoController.js
-import Photo from '../models/Photo.js';
-import { v2 as cloudinary } from 'cloudinary';
-import Folder from '../models/Folder.js';
+import Photo from "../models/Photo.js";
+import { v2 as cloudinary } from "cloudinary";
+import Folder from "../models/Folder.js";
 
 // Get candid photos (e.g., photos with the "candid" tag)
 export const getCandidPhotos = async (req, res) => {
   try {
-    const candidPhotos = await Photo.find({ tags: 'candid' }).sort({ createdAt: -1 });
+    const candidPhotos = await Photo.find({ tags: "candid" }).sort({
+      createdAt: -1,
+    });
     res.status(200).json(candidPhotos);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching candid photos', error });
+    res.status(500).json({ message: "Error fetching candid photos", error });
   }
 };
 
@@ -17,10 +19,18 @@ export const getCandidPhotos = async (req, res) => {
 export const getPhotosByFolder = async (req, res) => {
   try {
     const { folderName } = req.params;
-    const photos = await Photo.find({ folder: folderName }).sort({ createdAt: -1 });
+    // Find the folder by name
+    const folder = await Folder.findOne({ name: folderName });
+    if (!folder) {
+      return res.status(404).json({ message: "Folder not found" });
+    }
+    // Fetch all photos with this folder's ObjectId
+    const photos = await Photo.find({ folder: folder._id }).sort({
+      createdAt: -1,
+    });
     res.status(200).json(photos);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching photos by folder', error });
+    res.status(500).json({ message: "Error fetching photos by folder", error });
   }
 };
 
@@ -29,10 +39,10 @@ export const uploadPhoto = async (req, res) => {
   try {
     const file = req.file;
     if (!file) {
-      return res.status(400).json({ message: 'No file uploaded' });
+      return res.status(400).json({ message: "No file uploaded" });
     }
 
-    const { description, tags, folderName } = req.body; // Now accepts folderName instead of folderId
+    const { imageName, tags, folderName } = req.body;
 
     // ===== 1. CHECK IF FOLDER EXISTS =====
     let folder = await Folder.findOne({ name: folderName });
@@ -44,21 +54,33 @@ export const uploadPhoto = async (req, res) => {
       console.log(`Created new folder: ${folderName}`);
     }
 
-    // ===== 3. UPLOAD IMAGE TO CLOUDINARY =====
-    const result = await cloudinary.uploader.upload(file.buffer.toString('base64'), {
-      folder: 'photographer',
-      transformation: [
-        { width: 800, height: 800, crop: 'limit', quality: 'auto' }, // High-quality
-        { width: 200, height: 200, crop: 'thumb', quality: 'auto' }, // Thumbnail
-      ],
-    });
+    // ===== 3. UPLOAD IMAGE TO CLOUDINARY USING STREAM =====
+    const streamUpload = (buffer) => {
+      return new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          {
+            folder: "photographer",
+            // ...add transformations if needed...
+          },
+          (error, result) => {
+            if (result) {
+              resolve(result);
+            } else {
+              reject(error);
+            }
+          }
+        );
+        stream.end(buffer);
+      });
+    };
+
+    const result = await streamUpload(file.buffer);
 
     // ===== 4. SAVE PHOTO TO DATABASE =====
     const newPhoto = new Photo({
-      imageUrl: result.secure_url,
-      thumbnailUrl: result.eager[0].secure_url,
-      description,
-      tags: tags.split(',').map(tag => tag.trim()),
+      image: result.secure_url,
+      imageName,
+      tags: tags.split(",").map((tag) => tag.trim()),
       folder: folder._id, // Reference the folder's ObjectId
     });
 
@@ -68,12 +90,11 @@ export const uploadPhoto = async (req, res) => {
       photo: newPhoto,
       folder: { _id: folder._id, name: folder.name }, // Return folder info for confirmation
     });
-
   } catch (error) {
-    console.error('Error in uploadPhoto:', error);
-    res.status(500).json({ 
-      message: 'Error uploading photo',
-      error: error.message 
+    console.error("Error in uploadPhoto:", error);
+    res.status(500).json({
+      message: "Error uploading photo",
+      error: error.message,
     });
   }
 };
@@ -85,12 +106,11 @@ export const getPhotoDetails = async (req, res) => {
     const photo = await Photo.findById(id);
 
     if (!photo) {
-      return res.status(404).json({ message: 'Photo not found' });
+      return res.status(404).json({ message: "Photo not found" });
     }
 
     res.status(200).json(photo);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching photo details', error });
+    res.status(500).json({ message: "Error fetching photo details", error });
   }
 };
-

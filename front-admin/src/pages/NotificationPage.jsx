@@ -1,10 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function DashboardPage() {
   const [navOpen, setNavOpen] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Fetch all notifications from backend
+    const fetchNotifications = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(
+          "http://localhost:5000/api/contact/notifications"
+        );
+        const data = await res.json();
+        if (data.success) {
+          setNotifications(data.data);
+        }
+      } catch (err) {
+        // Optionally handle error
+      }
+      setLoading(false);
+    };
+    fetchNotifications();
+  }, []);
 
   return (
     <div className="min-h-screen flex bg-gray-900 text-gray-100">
@@ -82,13 +104,30 @@ export default function DashboardPage() {
           </h1>
         </div>
 
-        {/* Dashboard Content */}
+        {/* Notifications */}
         <div className="p-6">
-          <h2 className="text-2xl font-bold mb-4">Welcome to your Dashboard</h2>
-          <p className="text-gray-400">
-            Here you can view stats, recent uploads, and manage your photo
-            gallery.
-          </p>
+          <h2 className="text-2xl font-bold mb-4">Notifications</h2>
+          {loading ? (
+            <p className="text-gray-400">Loading...</p>
+          ) : notifications.length === 0 ? (
+            <p className="text-gray-400">No notifications found.</p>
+          ) : (
+            <ul className="space-y-4">
+              {notifications.map((notif) => (
+                <li
+                  key={notif._id}
+                  className="bg-gray-800 rounded p-4 shadow border border-gray-700"
+                >
+                  <div className="font-semibold">{notif.subject}</div>
+                  <div className="text-gray-300">{notif.message}</div>
+                  <div className="text-sm text-gray-400 mt-2">
+                    From: {notif.name} Contact: {notif.email} {notif.phone} |{" "}
+                    {new Date(notif.createdAt).toLocaleString()}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
     </div>

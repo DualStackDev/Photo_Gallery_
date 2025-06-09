@@ -9,7 +9,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/gallery" element={<GalleryPage />} />
-        <Route path="/gallery/:slug" element={<Photos />} />
+        <Route path="/gallery/:folderName" element={<Photos />} />
       </Routes>
     </Router>
   );

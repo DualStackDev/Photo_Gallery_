@@ -1,8 +1,11 @@
 import React from "react";
 import InfiniteScrollImageGallery from "../components/InfiniteScroll";
 import GalleryNavbar from "../components/GalleryNavbar";
+import { useParams } from "react-router-dom";
 
 const Photos = () => {
+  const { folderName } = useParams();
+
   return (
     <div>
       <GalleryNavbar />
@@ -10,7 +13,7 @@ const Photos = () => {
       <br />
       <br />
       <br />
-      <InfiniteScrollImageGallery />
+      <InfiniteScrollImageGallery folderName={folderName} />
     </div>
   );
 };
