@@ -15,26 +15,20 @@ const PORT = process.env.PORT || 5000;
 
 // Define allowed frontend URLs
 const allowedOrigins = [
-  process.env.CLIENT_URL_UPLOAD, // URL for the upload frontend
-  process.env.CLIENT_URL_DISPLAY, // URL for the display frontend
+  "https://photogallery-eosin-ten.vercel.app/",
+  "https://photodisplay-tau.vercel.app/",
 ];
 
-// Configure CORS
 app.use(
   cors({
     origin: function (origin, callback) {
-      // Allow requests with no origin (e.g., mobile apps, Postman)
-      if (!origin) return callback(null, true);
-
-      // Check if the origin is in the allowed list
-      if (allowedOrigins.includes(origin)) {
+      if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
         callback(new Error("Not allowed by CORS"));
       }
     },
-    credentials: true, // Allow cookies
-    allowedHeaders: ["Authorization", "Content-Type"],
+    credentials: true,
   })
 );
 
