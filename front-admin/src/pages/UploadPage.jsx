@@ -32,10 +32,13 @@ export default function UploadPage() {
       formData.append("tags", tags);
       formData.append("file", file);
 
-      const res = await fetch("http://localhost:5000/api/gallery/upload", {
-        method: "POST",
-        body: formData,
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/gallery/upload`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       const data = await res.json();
       if (res.ok) {
@@ -68,7 +71,7 @@ export default function UploadPage() {
         <ul className="p-4 space-y-2">
           <li>
             <NavLink
-              to="/"
+              to="/delete"
               end
               className={({ isActive }) =>
                 `block px-2 py-1 rounded hover:text-blue-400 ${
@@ -77,7 +80,7 @@ export default function UploadPage() {
               }
               onClick={() => setNavOpen(false)}
             >
-              Dashboard
+              Delete
             </NavLink>
           </li>
           <li>
@@ -198,7 +201,13 @@ export default function UploadPage() {
               {uploading ? "Uploading..." : "Upload Image"}
             </button>
             {message && (
-              <div className="mt-2 text-sm text-center text-red-400">
+              <div
+                className={`mt-2 text-sm text-center ${
+                  message.toLowerCase().includes("success")
+                    ? "text-green-400"
+                    : "text-red-400"
+                }`}
+              >
                 {message}
               </div>
             )}

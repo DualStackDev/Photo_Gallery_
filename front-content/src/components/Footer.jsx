@@ -220,26 +220,6 @@ const Footer = () => {
             &copy; {new Date().getFullYear()} Aryan Agarwal Photography. All
             rights reserved.
           </p>
-          <div className="flex space-x-6 text-sm text-gray-500">
-            <a
-              href="#privacy"
-              className="hover:text-white transition duration-300"
-            >
-              Privacy Policy
-            </a>
-            <a
-              href="#terms"
-              className="hover:text-white transition duration-300"
-            >
-              Terms of Service
-            </a>
-            <a
-              href="#sitemap"
-              className="hover:text-white transition duration-300"
-            >
-              Sitemap
-            </a>
-          </div>
         </motion.div>
       </div>
     </motion.footer>

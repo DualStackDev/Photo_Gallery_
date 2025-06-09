@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { motion } from "framer-motion";
 
-export default function DashboardPage() {
+export default function NotificationPage() {
   const [navOpen, setNavOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -14,7 +14,7 @@ export default function DashboardPage() {
       setLoading(true);
       try {
         const res = await fetch(
-          "http://localhost:5000/api/contact/notifications"
+          `${import.meta.env.VITE_API_URL}/api/contact/notifications`
         );
         const data = await res.json();
         if (data.success) {
@@ -43,7 +43,7 @@ export default function DashboardPage() {
         <ul className="p-4 space-y-2">
           <li>
             <NavLink
-              to="/"
+              to="/delete"
               end
               className={({ isActive }) =>
                 `block px-2 py-1 rounded hover:text-blue-400 ${
@@ -52,7 +52,7 @@ export default function DashboardPage() {
               }
               onClick={() => setNavOpen(false)}
             >
-              Dashboard
+              Delete
             </NavLink>
           </li>
           <li>
@@ -100,7 +100,7 @@ export default function DashboardPage() {
             />
           )}
           <h1 className="ml-4 text-xl font-semibold text-gray-200">
-            Dashboard
+            Notification
           </h1>
         </div>
 

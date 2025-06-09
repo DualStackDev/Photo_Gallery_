@@ -12,7 +12,7 @@ const InfiniteScrollImageGallery = ({ folderName }) => {
   useEffect(() => {
     if (!folderName) return;
     axios
-      .get(`http://localhost:5000/api/gallery/folder/${folderName}`)
+      .get(`${import.meta.env.VITE_API_URL}/api/gallery/folder/${folderName}`)
       .then((res) => {
         console.log("Fetched images:", res.data); // Debug log
         setImages(res.data);
@@ -24,7 +24,7 @@ const InfiniteScrollImageGallery = ({ folderName }) => {
   const getImageDetails = async (id) => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/gallery/photo/${id}`
+        `${import.meta.env.VITE_API_URL}/api/gallery/photo/${id}`
       );
       setImageDetails(response.data);
     } catch (error) {
@@ -90,7 +90,9 @@ const InfiniteScrollImageGallery = ({ folderName }) => {
               </div>
               <div className="w-1/2 p-6 overflow-y-auto">
                 <h2 className="text-xl font-bold mb-2">
-                  {imageDetails?.imageName || selectedImage.imageName || "No Name"}
+                  {imageDetails?.imageName ||
+                    selectedImage.imageName ||
+                    "No Name"}
                 </h2>
                 <p className="text-gray-600 mb-4">
                   {imageDetails?.tags?.join(", ") ||

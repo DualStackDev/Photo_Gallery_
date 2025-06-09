@@ -9,7 +9,7 @@ const GalleryPage = () => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/api/folders`)
+      .get(`${import.meta.env.VITE_API_URL}/api/folders`)
       .then((res) => setFolders(res.data));
   }, []);
 

@@ -8,14 +8,14 @@ export const deleteByName = async (req, res) => {
   try {
     if (type === 'photo') {
       // ===== PHOTO DELETION =====
-      const photo = await Photo.findOne({ description: name }); // Match by description/name
+      const photo = await Photo.findOne({ imageName: name }); // Match by imageName
       
       if (!photo) {
         return res.status(404).json({ success: false, message: 'Photo not found' });
       }
 
       // Delete from Cloudinary
-      const publicId = photo.imageUrl.split('/').pop().split('.')[0];
+      const publicId = photo.image.split('/').pop().split('.')[0];
       await cloudinary.uploader.destroy(`photographer/${publicId}`);
 
       // Delete from MongoDB
@@ -37,7 +37,7 @@ export const deleteByName = async (req, res) => {
       // Delete all photos in the folder
       const photos = await Photo.find({ folder: folder._id });
       const deletePromises = photos.map(photo => {
-        const publicId = photo.imageUrl.split('/').pop().split('.')[0];
+        const publicId = photo.image.split('/').pop().split('.')[0];
         return cloudinary.uploader.destroy(`photographer/${publicId}`);
       });
       await Promise.all(deletePromises);
