@@ -17,6 +17,8 @@ const PORT = process.env.PORT || 5000;
 const allowedOrigins = [
   "https://photogallery-eosin-ten.vercel.app",
   "https://photodisplay-tau.vercel.app",
+  "http://localhost:3000",
+  "http://localhost:3001",
 ];
 
 app.use(

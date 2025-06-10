@@ -10,9 +10,6 @@ import upload from "../utils/multer.js"; // Multer middleware for file uploads
 
 const router = express.Router();
 
-// Get candid photos for the main page
-router.get("/candid", getCandidPhotos);
-
 // Get photos by folder (e.g., "cats", "cars")
 router.get("/folder/:folderName", getPhotosByFolder);
 
