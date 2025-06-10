@@ -13,8 +13,18 @@ const Navbar = () => {
   return (
     <nav className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white p-4 flex items-center justify-between shadow-lg z-50 w-11/12 md:w-3/4 rounded-lg">
       {/* Left Side - Name */}
-      <h1 className="text-xl font-bold">Your Name</h1>
 
+      <div className="flex items-center gap-2">
+        <div className="w-10 h-10 rounded-full overflow-hidden">
+          <a href="/">
+            <img
+              src="https://res.cloudinary.com/dsajmotau/image/upload/v1749575057/IMG_9901_rnjndf.jpg"
+              alt="Profile"
+              className="w-full h-full object-cover"
+            />
+          </a>
+        </div>
+      </div>
       {/* Middle Section - Navigation Links */}
       <div className="hidden md:flex gap-4">
         <a
@@ -36,7 +46,6 @@ const Navbar = () => {
           Contact
         </a>
       </div>
-
       {/* Right Side - Button */}
       <button
         onClick={() => navigate("/gallery")}

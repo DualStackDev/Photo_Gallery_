@@ -21,11 +21,11 @@ const GalleryPage = () => {
           <div
             key={folder._id}
             onClick={() => navigate(`/gallery/${folder.name}`)}
-            className="cursor-pointer rounded-xl shadow-md overflow-hidden hover:shadow-lg transition bg-gradient-to-br from-yellow-100 to-yellow-200"
+            className="cursor-pointer rounded-xl shadow-md overflow-hidden hover:shadow-lg transition bg-white/90 backdrop-blur-md border border-white/20"
             style={{ minHeight: 0, maxWidth: 180 }}
           >
             {/* Folder icon area */}
-            <div className="w-full h-24 flex items-center justify-center text-yellow-800 font-bold text-lg tracking-wide">
+            <div className="w-full h-24 flex items-center justify-center text-gray-900 font-bold text-lg tracking-wide">
               {folder.name.toUpperCase()}
             </div>
             {/* Folder name */}

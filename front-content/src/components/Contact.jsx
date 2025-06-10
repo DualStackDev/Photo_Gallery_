@@ -143,8 +143,8 @@ const ContactSection = () => {
             Get In Touch
           </h2>
           <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-            Interested in working together? Fill out the form below to start a
-            conversation about your photography needs.
+            Got work for me? Fill out the form below and I will reach out to you
+            within 24 hours.
           </p>
         </motion.div>
 

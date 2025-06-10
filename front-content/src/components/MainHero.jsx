@@ -40,29 +40,33 @@ const MainHero = () => {
       className="min-h-screen flex flex-col justify-center items-center text-white p-8"
       style={{
         background:
-          "linear-gradient(135deg, #1a2a6c 0%, #b21f1f 50%, #fdbb2d 100%)",
+          "linear-gradient(120deg, #232526, #23395d, #406080, #8ca6db, #232526)",
+        backgroundSize: "400% 400%",
+        animation: "gradientBG 15s ease infinite",
       }}
     >
+      <style>
+        {`
+          @keyframes gradientBG {
+            0% {background-position: 0% 50%;}
+            50% {background-position: 100% 50%;}
+            100% {background-position: 0% 50%;}
+          }
+        `}
+      </style>
       <motion.h1
         variants={textVariants}
-        className="text-6xl md:text-8xl font-bold mb-4 text-center"
+        className="text-6xl md:text-8xl font-bold mb-8 text-center"
       >
         Aryan Agarwal
       </motion.h1>
       <motion.div variants={textVariants} className="max-w-2xl text-center">
         <p className="text-xl md:text-2xl mb-6">
-          Capturing life's extraordinary moments through the lens of passion
+          Capturing extraordinary moments through the lens of passion
         </p>
         <p className="text-lg opacity-80">
-          Based in New York, specializing in portrait, landscape, and street
-          photography
+          Based in Pune, I am passionate about CANDIDS
         </p>
-      </motion.div>
-
-      <motion.div variants={textVariants} className="mt-12">
-        <button className="px-8 py-3 bg-white text-gray-900 rounded-full font-medium hover:bg-opacity-90 transition duration-300">
-          View Portfolio
-        </button>
       </motion.div>
     </motion.div>
   );

@@ -92,7 +92,7 @@ const PhotoSection = () => {
           variants={textVariants}
           className="text-4xl md:text-5xl font-bold mb-12 text-white text-center"
         >
-          My Vision
+          Meet Me
         </motion.h2>
 
         <div className="flex flex-col md:flex-row gap-12 items-center justify-center">
@@ -107,7 +107,7 @@ const PhotoSection = () => {
           >
             <div className="w-full h-full rounded-lg overflow-hidden shadow-2xl bg-gray-800 flex items-center justify-center">
               <img
-                src="https://cdn.pixabay.com/photo/2025/02/09/12/22/snowdrops-9394219_1280.jpg"
+                src="https://res.cloudinary.com/dsajmotau/image/upload/v1749575057/IMG_9901_rnjndf.jpg"
                 alt="My photo"
                 className="w-full h-full object-cover rounded-lg"
               />
@@ -116,17 +116,16 @@ const PhotoSection = () => {
 
           <motion.div variants={textVariants} className="text-white max-w-lg">
             <h3 className="text-2xl md:text-3xl font-semibold mb-6">
-              The Story Behind My Lens
+              Hi, I am Aryan!
             </h3>
             <p className="text-lg mb-6">
-              I believe photography is more than just capturing images—it's
-              about preserving emotions, telling stories, and creating timeless
-              art that resonates with the soul.
+              I am a Journalism & Mass Communication graduate by profession,
+              with a keen interest in journalistic writing, but I am also
+              passionate about Candid Photography.
             </p>
             <p className="text-lg">
-              With over a decade of experience, I've developed a unique style
-              that blends technical precision with artistic vision, creating
-              photographs that are both authentic and evocative.
+              I am not a professional photographer, but capturing moments using
+              my Sony ZV-E10 is something I like exploring.
             </p>
           </motion.div>
         </div>
