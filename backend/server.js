@@ -47,6 +47,7 @@ app.use("/api/folders", folderRoutes);
 app.use("/api/delete", deleteRoutes);
 app.use("/api/contact", contactRoutes);
 app.get("/api/health", (req, res) => res.sendStatus(200));
+app.get("/api/privacypolicy", (req, res) => res.sendStatus(200));
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
