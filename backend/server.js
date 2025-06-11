@@ -16,9 +16,10 @@ const PORT = process.env.PORT || 5000;
 // Define allowed frontend URLs
 const allowedOrigins = [
   "https://photogallery-eosin-ten.vercel.app",
-  "https://photodisplay-tau.vercel.app",
+  "https://aryanportfolio-iota-topaz.vercel.app",
   "http://localhost:3000",
   "http://localhost:3001",
+  "https://aryanagarwal.com",
 ];
 
 app.use(
