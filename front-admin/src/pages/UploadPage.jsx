@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { compressImageIfNeeded } from "../utils/imageCompression";
 import { Menu, X } from "lucide-react";
 import { motion } from "framer-motion";
 import { NavLink } from "react-router-dom";
@@ -26,11 +27,14 @@ export default function UploadPage() {
     setUploading(true);
     setMessage("");
     try {
+      // Compress image if needed
+      const processedFile = await compressImageIfNeeded(file);
+
       const formData = new FormData();
       formData.append("imageName", imageName);
       formData.append("folderName", folderName);
       formData.append("tags", tags);
-      formData.append("file", file);
+      formData.append("file", processedFile);
 
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/api/gallery/upload`,
