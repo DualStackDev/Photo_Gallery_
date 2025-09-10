@@ -2,6 +2,7 @@
 import Photo from "../models/Photo.js";
 import { v2 as cloudinary } from "cloudinary";
 import Folder from "../models/Folder.js";
+import sharp from "sharp";
 
 // Get candid photos (e.g., photos with the "candid" tag)
 export const getCandidPhotos = async (req, res) => {
@@ -35,6 +36,7 @@ export const getPhotosByFolder = async (req, res) => {
 };
 
 // Upload a photo (admin only)
+
 export const uploadPhoto = async (req, res) => {
   try {
     const file = req.file;
@@ -44,24 +46,27 @@ export const uploadPhoto = async (req, res) => {
 
     const { imageName, tags, folderName } = req.body;
 
-    // ===== 1. CHECK IF FOLDER EXISTS =====
+    //  1. CHECK IF FOLDER EXISTS 
     let folder = await Folder.findOne({ name: folderName });
 
-    // ===== 2. IF FOLDER DOESN'T EXIST, CREATE IT =====
+    //  2. IF FOLDER DOESN'T EXIST, CREATE IT 
     if (!folder) {
       folder = new Folder({ name: folderName });
       await folder.save();
       console.log(`Created new folder: ${folderName}`);
     }
 
-    // ===== 3. UPLOAD IMAGE TO CLOUDINARY USING STREAM =====
+    //  3. COMPRESS IMAGE WITH SHARP (NEW STEP) 
+    const compressedBuffer = await sharp(file.buffer)
+      .resize({ width: 1920, fit: "inside" }) // Resize to a max width of 1920px, keeping aspect ratio
+      .toFormat("webp", { quality: 80 })      // Convert to WebP format with 80% quality
+      .toBuffer();
+
+    //  4. UPLOAD COMPRESSED BUFFER TO CLOUDINARY 
     const streamUpload = (buffer) => {
       return new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(
-          {
-            folder: "photographer",
-            // ...add transformations if needed...
-          },
+          { folder: "photographer" },
           (error, result) => {
             if (result) {
               resolve(result);
@@ -74,21 +79,22 @@ export const uploadPhoto = async (req, res) => {
       });
     };
 
-    const result = await streamUpload(file.buffer);
+    // Use the new compressedBuffer instead of the original file.buffer
+    const result = await streamUpload(compressedBuffer);
 
-    // ===== 4. SAVE PHOTO TO DATABASE =====
+    //  5. SAVE PHOTO TO DATABASE 
     const newPhoto = new Photo({
       image: result.secure_url,
       imageName,
       tags: tags.split(",").map((tag) => tag.trim()),
-      folder: folder._id, // Reference the folder's ObjectId
+      folder: folder._id,
     });
 
     await newPhoto.save();
 
     res.status(201).json({
       photo: newPhoto,
-      folder: { _id: folder._id, name: folder.name }, // Return folder info for confirmation
+      folder: { _id: folder._id, name: folder.name },
     });
   } catch (error) {
     console.error("Error in uploadPhoto:", error);
@@ -113,4 +119,4 @@ export const getPhotoDetails = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: "Error fetching photo details", error });
   }
-};
+}
